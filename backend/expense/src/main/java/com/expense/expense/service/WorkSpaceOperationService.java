@@ -13,6 +13,10 @@ import com.expense.expense.entity.Account;
 import com.expense.expense.entity.AccountBalance;
 import com.expense.expense.entity.WorkSpace;
 import com.expense.expense.entity.operations.Operation;
+import com.expense.expense.exception.AccountException;
+import com.expense.expense.exception.AccountExceptionEnum;
+import com.expense.expense.exception.SpaceException;
+import com.expense.expense.exception.SpaceExceptionEnum;
 import com.expense.expense.mapper.OperationMapper;
 import com.expense.expense.repository.AccountBalanceRepository;
 import com.expense.expense.repository.AccountRepository;
@@ -33,9 +37,6 @@ public class WorkSpaceOperationService {
     @Autowired
     OperationMapper operationMapper;
 
-    // @Autowired
-    // AccountOperationService accountOperationService;
-
     @Autowired
     AccountBalanceRepository accountBalanceRepository;
 
@@ -44,7 +45,7 @@ public class WorkSpaceOperationService {
 
     @Transactional
     public OperationDto addOperation(Integer userId, Integer spaceId, OperationAddDto operationDto) {
-        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId, userId).orElseThrow(() -> new RuntimeException("Space not found in that user"));
+        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId, userId).orElseThrow(() -> new SpaceException(SpaceExceptionEnum.SPACE_NOT_FOUND));
         AccountBalance accountBalance = null;
         for(AccountBalance ab : workSpace.getAccountsBalances()){
             if(ab.getAccount().getId() == operationDto.getAccountId()){
@@ -53,12 +54,11 @@ public class WorkSpaceOperationService {
             }
         }
         if(accountBalance == null)
-            throw new RuntimeException("Account not found in that space");
+            throw new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND);
         Operation operation = operationMapper.operationAddDtoToOperation(operationDto);
         operation.setSpace(workSpace);
 
         Account account = accountBalance.getAccount();
-        //account.addOperation(operation);
         account.setBalance(account.getBalance() + operation.getTransactionValue());
         account.setAvailableMoney(account.getAvailableMoney() + operation.calculateAvailableMoney());
 
@@ -73,7 +73,7 @@ public class WorkSpaceOperationService {
     
     @Transactional
     public OperationDto updateOperation(Integer userId, Integer spaceId, OperationUpdateDto operationDto) {
-        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId, userId).orElseThrow(() -> new RuntimeException("Space not found in that user"));
+        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId, userId).orElseThrow(() -> new SpaceException(SpaceExceptionEnum.SPACE_NOT_FOUND));
         Operation operation = findOperation(workSpace, operationDto.getId());
         if(operationDto.getName() != null)
             operation.setName(operationDto.getName());
@@ -84,7 +84,7 @@ public class WorkSpaceOperationService {
     }
 
     public List<OperationDto> getOperations(Integer userId, Integer spaceId) {
-        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId, userId).orElseThrow(() -> new RuntimeException("Space not found in that user"));
+        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId, userId).orElseThrow(() -> new SpaceException(SpaceExceptionEnum.SPACE_NOT_FOUND));
         return workSpace.getOperations()
             .stream()
             .map( operation -> operationMapper.operationToOperationDto(operation))
@@ -102,7 +102,7 @@ public class WorkSpaceOperationService {
             }
         }
         if(operation == null){
-            throw new RuntimeException("Operation not found in that space");
+            throw new SpaceException(SpaceExceptionEnum.OPERATION_NOT_FOUND);
         }
         return operation;
     }
@@ -118,12 +118,12 @@ public class WorkSpaceOperationService {
 
     @Transactional
     public void deleteOperation(Integer userId, Integer spaceId, Integer operationId) {
-        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId, userId).orElseThrow(() -> new RuntimeException("Space not found in that user"));
+        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId, userId).orElseThrow(() -> new SpaceException(SpaceExceptionEnum.SPACE_NOT_FOUND)); 
         Operation operation = findOperation(workSpace, operationId);
         Account account = operation.getAccount();
         AccountBalance accountBalance = findAccountBalance(workSpace, account.getId());
         if(accountBalance == null){
-            throw new RuntimeException("Unexpected error, the account must exist in some accountBalance");
+            throw new AccountException(AccountExceptionEnum.ACCOUNT_BALANCE_NOT_FOUND);
         }
         accountBalance.setBalance(accountBalance.getBalance() - operation.getTransactionValue());
         account.setBalance(account.getBalance() - operation.getTransactionValue());

@@ -12,6 +12,10 @@ import com.expense.expense.dto.SpaceUpdate;
 import com.expense.expense.entity.Account;
 import com.expense.expense.entity.AccountBalance;
 import com.expense.expense.entity.WorkSpace;
+import com.expense.expense.exception.AccountException;
+import com.expense.expense.exception.AccountExceptionEnum;
+import com.expense.expense.exception.UserException;
+import com.expense.expense.exception.UserExceptionEnum;
 import com.expense.expense.entity.UserEntity;
 import com.expense.expense.mapper.WorkSpaceMapper;
 import com.expense.expense.repository.WorkSpaceRepository;
@@ -33,7 +37,7 @@ public class WorkspaceService {
 
     @Transactional
     public SpaceDto addworkSpace(Integer userId, SpaceAddDto workSpaceAddDto) {
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
         WorkSpace workSpace = workSpaceMapper.WorkSpaceAddDtoToWorkSpace(workSpaceAddDto);
         workSpace.setUser(user);
         user.getAccounts()
@@ -51,7 +55,7 @@ public class WorkspaceService {
     @Transactional
     public SpaceDto updateWorkSpace(Integer userId, SpaceUpdate workSpaceUpdate) {
         Integer spaceId = workSpaceUpdate.getId();
-        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         if(workSpaceUpdate.getName() != "")
             workSpace.setName(workSpaceUpdate.getName());
         if(workSpaceUpdate.getDescription() != "")
@@ -61,14 +65,14 @@ public class WorkspaceService {
     }
 
     public SpaceDto getWorkSpace(Integer userId, Integer spaceId) {
-        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         SpaceDto workSpaceDto = workSpaceMapper.workSpaceToWorkSpaceDto(workSpace);
         return workSpaceDto;
 
     }
 
     public List<SpaceDto> getWorkSpaces(Integer userId) {
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
         List<WorkSpace> spaces = workSpaceRepository.findByUserId(userId);
         return spaces
             .stream()
@@ -79,7 +83,7 @@ public class WorkspaceService {
 
     @Transactional
     public void deleteWorkSpace(Integer userId, Integer spaceId) {
-        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         workSpace.getOperations()
             .stream()
             .forEach((operation) -> {

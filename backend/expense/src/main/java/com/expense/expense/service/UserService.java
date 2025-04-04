@@ -11,6 +11,8 @@ import com.expense.expense.dto.UserDto;
 import com.expense.expense.dto.UserRegisterDto;
 import com.expense.expense.dto.UserUpdateDto;
 import com.expense.expense.entity.UserEntity;
+import com.expense.expense.exception.UserException;
+import com.expense.expense.exception.UserExceptionEnum;
 import com.expense.expense.mapper.UserMapper;
 import com.expense.expense.repository.UserRepository;
 
@@ -34,7 +36,7 @@ public class UserService {
         UserEntity user = userMapper.userRegisterDtoToUser(userDto);
         Boolean availableUsername = userRepository.existsByUsername(user.getUsername());
         if(availableUsername){
-            throw new RuntimeException("Not valid username");
+            throw new UserException(UserExceptionEnum.USERNAME_NOT_VALID);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
@@ -43,12 +45,12 @@ public class UserService {
     
     @Transactional
     public void deleteUser(Integer userId){
-        userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.findById(userId).orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
         userRepository.deleteById(userId);
     }
 
     public UserDto getUserById(Integer userId){
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
         return userMapper.userToUserDto(user);
     }
 
@@ -62,12 +64,12 @@ public class UserService {
     
     @Transactional
     public UserDto updateUser(UserUpdateDto userUpdate){
-        UserEntity user = userRepository.findById(userUpdate.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = userRepository.findById(userUpdate.getId()).orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
         
         if(userUpdate.getUsername() != ""){
             Boolean availableUsername = userRepository.existsByUsername(userUpdate.getUsername());
             if(availableUsername && !user.getUsername().equals(userUpdate.getUsername())){
-                throw new RuntimeException("Not valid username");
+                throw new UserException(UserExceptionEnum.USERNAME_NOT_VALID);
             }
             user.setUsername(userUpdate.getUsername());
         }

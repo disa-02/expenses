@@ -14,6 +14,10 @@ import com.expense.expense.entity.AccountBalance;
 import com.expense.expense.entity.UserEntity;
 import com.expense.expense.entity.operations.InTransferOperation;
 import com.expense.expense.entity.operations.OutTransferOperation;
+import com.expense.expense.exception.AccountException;
+import com.expense.expense.exception.AccountExceptionEnum;
+import com.expense.expense.exception.UserException;
+import com.expense.expense.exception.UserExceptionEnum;
 import com.expense.expense.mapper.AccountMapper;
 import com.expense.expense.mapper.OperationMapper;
 import com.expense.expense.repository.AccountRepository;
@@ -42,7 +46,7 @@ public class AccountService {
 
     @Transactional
     public AccountDto addAccount(Integer id, AccountSaveDto accountSaveDto){
-        UserEntity user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
         Account account = accountMapper.accountSaveDtoToAccount(accountSaveDto);
         account.setUser(user);
         user.addAccount(account);
@@ -61,22 +65,8 @@ public class AccountService {
 
     @Transactional
     public void delAccount(Integer userId, Integer accountId){
-        Account account = accountRepository.findByIdAndUserId(accountId, userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        Account account = accountRepository.findByIdAndUserId(accountId, userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         UserEntity user = account.getUser();
-        // for(Operation operation: account.getOperations()){
-        //     if(operation instanceof InTransferOperation){
-        //         ((InTransferOperation)operation).getTransferOperation().setTransferOperation(null);
-        //         operation = operationRepository.save(operation);
-        //         ((InTransferOperation)operation).setTransferOperation(null);
-        //         operation = operationRepository.save(operation);
-        //     }
-        //     if(operation instanceof OutTransferOperation){
-        //         ((OutTransferOperation)operation).getTransferOperation().setTransferOperation(null);
-        //         operation = operationRepository.save(operation);
-        //         ((OutTransferOperation)operation).setTransferOperation(null);
-        //         operation = operationRepository.save(operation);
-        //     }
-        // }
 
         account.getOperations().stream().map((operation) ->{
             if(operation instanceof InTransferOperation){
@@ -103,12 +93,12 @@ public class AccountService {
     }
 
     public AccountDto getAccount(Integer userId, Integer accountId){
-        Account account = accountRepository.findByIdAndUserId(accountId,userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        Account account = accountRepository.findByIdAndUserId(accountId,userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         return accountMapper.accountToAccountDto(account);
     }
 
     public List<AccountDto> getAccounts(Integer userId){
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
         return user.getAccounts()
             .stream()
             .map(account -> accountMapper.accountToAccountDto(account))
@@ -119,7 +109,7 @@ public class AccountService {
     @Transactional
     public AccountDto updateAccount(Integer userId, AccountUpdateDto accountUpdateDto) {
         Integer accountId = accountUpdateDto.getId();
-        Account account = accountRepository.findByIdAndUserId(accountId, userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        Account account = accountRepository.findByIdAndUserId(accountId, userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         if(accountUpdateDto.getName() != ""){
             account.setName(accountUpdateDto.getName());
         }

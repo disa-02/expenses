@@ -22,6 +22,8 @@ import com.expense.expense.entity.Account;
 import com.expense.expense.entity.operations.InTransferOperation;
 import com.expense.expense.entity.operations.Operation;
 import com.expense.expense.entity.operations.OutTransferOperation;
+import com.expense.expense.exception.AccountException;
+import com.expense.expense.exception.AccountExceptionEnum;
 import com.expense.expense.mapper.OperationMapper;
 import com.expense.expense.repository.AccountRepository;
 import com.expense.expense.repository.OperationRepository;
@@ -65,17 +67,17 @@ public class AccountOperationService {
     @Transactional
     public OperationDto moneyTransaction(Integer userId, OperationAddDto operationDto) {
         Integer accountId = operationDto.getAccountId();
-        Account account = accountRepository.findByIdAndUserId(accountId, userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        Account account = accountRepository.findByIdAndUserId(accountId, userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         Operation operationUpdated = doTransaction(operationDto, account);
         return operationMapper.operationToOperationDto(operationUpdated);
     }
 
     @Transactional
     public void updateOperation(Integer userId, Integer accountId, OperationUpdateDto operationDto) throws ParseException {
-        Operation operation = operationRepository.findByIdAndAccountId(operationDto.getId(), accountId).orElseThrow(() -> new RuntimeException("Operation not found in that account"));
+        Operation operation = operationRepository.findByIdAndAccountId(operationDto.getId(), accountId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_OPERATION_NOT_FOUND));
         Integer operationUserId = operation.getAccount().getUser().getId();
         if(userId != operationUserId){
-            throw new RuntimeException("Account not found in that user");
+            throw new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND);
         }
         if(operationDto.getName() != ""){
             operation.setName(operationDto.getName());
@@ -83,12 +85,7 @@ public class AccountOperationService {
         if(operationDto.getDescription() != ""){
             operation.setDescription(operationDto.getDescription());
         }
-        // if(operationDto.getDate() != ""){
-        //     String dateFormat = "yyyy-MM-dd'T'HH:mm:ss";
-        //     SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
-        //     Date date = formatter.parse(operationDto.getDate());
-        //     operation.setDate(date);
-        // }
+
         operationRepository.save(operation);
     } 
     
@@ -102,11 +99,11 @@ public class AccountOperationService {
 
     @Transactional
     public void deleteOperation(Integer userId, Integer accountId, Integer operationId){
-        Operation operation = operationRepository.findByIdAndAccountId(operationId, accountId).orElseThrow(() -> new RuntimeException("Operation not found in that account"));
+        Operation operation = operationRepository.findByIdAndAccountId(operationId, accountId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_OPERATION_NOT_FOUND));
         Account account = operation.getAccount();
         Integer operationUserId = account.getUser().getId();
         if(userId != operationUserId){
-            throw new RuntimeException("Account not found in that user");
+            throw new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND);
         }
         workSpaceOperationService.setBalanceOnDeleteOperation(operation,accountId);
         delOperation(account, operation);
@@ -134,14 +131,13 @@ public class AccountOperationService {
             }
             outTransferOperation.setTransferOperation(null);
             
-            // accountRepository.save(inAccount);
         }
         accountRepository.save(account);
         
     }
 
     public List<OperationDto> getOperations(Integer userId, Integer accountId) {
-        Account account = accountRepository.findByIdAndUserId(accountId, userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        Account account = accountRepository.findByIdAndUserId(accountId, userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         return account.getOperations()
                 .stream()
                 .map(operation -> operationMapper.operationToOperationDto(operation))
@@ -154,8 +150,8 @@ public class AccountOperationService {
         Integer destinationAccountId = transferOperationDto.getDestinationAccountId();
         Double amount = transferOperationDto.getAmount();
 
-        Account sourceaAccount = accountRepository.findByIdAndUserId(sourceAccountId, userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
-        Account destinationAccount = accountRepository.findByIdAndUserId(destinationAccountId, userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        Account sourceaAccount = accountRepository.findByIdAndUserId(sourceAccountId, userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
+        Account destinationAccount = accountRepository.findByIdAndUserId(destinationAccountId, userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         String now = formatter.format(new Date());

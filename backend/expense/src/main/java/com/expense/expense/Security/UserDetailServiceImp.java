@@ -15,6 +15,8 @@ import com.expense.expense.dto.AuthLoginRequestDto;
 import com.expense.expense.dto.AuthResponseDto;
 import com.expense.expense.dto.UserRegisterDto;
 import com.expense.expense.entity.UserEntity;
+import com.expense.expense.exception.UserException;
+import com.expense.expense.exception.UserExceptionEnum;
 import com.expense.expense.mapper.UserMapper;
 import com.expense.expense.repository.UserRepository;
 import com.expense.expense.utils.JwtUtils;
@@ -38,7 +40,7 @@ public class UserDetailServiceImp implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException(username));
+            .orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
 
         return userEntity;
     }

@@ -3,6 +3,7 @@ package com.expense.expense.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,10 @@ import com.expense.expense.entity.Account;
 import com.expense.expense.entity.AccountBalance;
 import com.expense.expense.entity.SavingSpace;
 import com.expense.expense.entity.UserEntity;
+import com.expense.expense.exception.AccountException;
+import com.expense.expense.exception.AccountExceptionEnum;
+import com.expense.expense.exception.UserException;
+import com.expense.expense.exception.UserExceptionEnum;
 import com.expense.expense.mapper.SavingSpaceMapper;
 import com.expense.expense.repository.SavingSpaceRepository;
 import com.expense.expense.repository.UserRepository;
@@ -33,7 +38,7 @@ public class SavingSpaceService {
 
     @Transactional
     public SpaceDto addSavingSpace(Integer userId, SpaceAddDto savingSpaceAddDto) {
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
         SavingSpace savingSpace = savingSpaceMapper.SavingSpaceAddDtoToSavingSpace(savingSpaceAddDto);
         savingSpace.setUser(user);
         user.getAccounts()
@@ -51,7 +56,7 @@ public class SavingSpaceService {
     @Transactional
     public SpaceDto updateSavingSpace(Integer userId, SpaceUpdate savingSpaceUpdate) {
         Integer spaceId = savingSpaceUpdate.getId();
-        SavingSpace savingSpace = savingSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        SavingSpace savingSpace = savingSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         if(savingSpaceUpdate.getName() != "")
             savingSpace.setName(savingSpaceUpdate.getName());
         if(savingSpaceUpdate.getDescription() != "")
@@ -61,14 +66,14 @@ public class SavingSpaceService {
     }
 
     public SpaceDto getSavingSpace(Integer userId, Integer spaceId) {
-        SavingSpace savingSpace = savingSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        SavingSpace savingSpace = savingSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         SpaceDto savingSpaceDto = savingSpaceMapper.savingSpaceToSavingSpaceDto(savingSpace);
         return savingSpaceDto;
 
     }
 
     public List<SpaceDto> getSavingSpaces(Integer userId) {
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new UserException(UserExceptionEnum.USER_NOT_FOUND));
         List<SavingSpace> spaces = savingSpaceRepository.findByUserId(userId);
         return spaces
             .stream()
@@ -79,7 +84,7 @@ public class SavingSpaceService {
 
     @Transactional
     public void deleteSavingSpace(Integer userId, Integer spaceId) {
-        SavingSpace savingSpace = savingSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new RuntimeException("Account not found in that user"));
+        SavingSpace savingSpace = savingSpaceRepository.findByIdAndUserId(spaceId,userId).orElseThrow(() -> new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND));
         savingSpace.getOperations()
             .stream()
             .forEach((operation) -> {

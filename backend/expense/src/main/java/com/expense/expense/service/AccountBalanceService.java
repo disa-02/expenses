@@ -10,6 +10,10 @@ import com.expense.expense.dto.AccountBalanceDto;
 import com.expense.expense.dto.AccountBalanceUpdateDto;
 import com.expense.expense.entity.AccountBalance;
 import com.expense.expense.entity.WorkSpace;
+import com.expense.expense.exception.AccountException;
+import com.expense.expense.exception.AccountExceptionEnum;
+import com.expense.expense.exception.SpaceException;
+import com.expense.expense.exception.SpaceExceptionEnum;
 import com.expense.expense.mapper.AccountBalanceMapper;
 import com.expense.expense.repository.AccountBalanceRepository;
 import com.expense.expense.repository.WorkSpaceRepository;
@@ -40,21 +44,21 @@ public class AccountBalanceService {
                 return accountBalanceMapper.accountBalanceToAccountBalanceDto(accountBalance);
             }
         }
-        throw new RuntimeException("Account balance not found in that space");
+        throw new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND);
     }
 
     public AccountBalanceDto getAccountsBalance(Integer userId, Integer workSpaceId, Integer accountBalanceId) {
-        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(workSpaceId, userId).orElseThrow(() -> new RuntimeException("Space not found in that user"));
+        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(workSpaceId, userId).orElseThrow(() -> new SpaceException(SpaceExceptionEnum.SPACE_NOT_FOUND));
         for(AccountBalance accountBalance : workSpace.getAccountsBalances()){
             if(accountBalance.getId() == accountBalanceId){
                 return accountBalanceMapper.accountBalanceToAccountBalanceDto(accountBalance);
             }
         }
-        throw new RuntimeException("Account balance not found in that space");
+        throw new AccountException(AccountExceptionEnum.ACCOUNT_NOT_FOUND);
     }
 
     public List<AccountBalanceDto> listAccountsBalance(Integer userId, Integer workSpaceId) {
-        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(workSpaceId, userId).orElseThrow(() -> new RuntimeException("Space not found in that user"));
+        WorkSpace workSpace = workSpaceRepository.findByIdAndUserId(workSpaceId, userId).orElseThrow(() -> new SpaceException(SpaceExceptionEnum.SPACE_NOT_FOUND));
         return workSpace.getAccountsBalances()
             .stream()
             .map(accountBalance -> accountBalanceMapper.accountBalanceToAccountBalanceDto(accountBalance))
