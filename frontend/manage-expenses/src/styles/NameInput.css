@@ -1,0 +1,10 @@
+.inputItemName {
+    font-size: 24px; /* Tamaño de fuente más grande */
+    font-weight: bold; /* Texto en negrita */
+    color: #3b82f6; /* Color celeste */
+    margin-bottom: 10px; /* Espaciado inferior */
+    border-bottom: 2px solid #d1d5db; /* Línea inferior */
+    padding-bottom: 5px; /* Espaciado interior */
+    border: none;
+    background: none;
+  }

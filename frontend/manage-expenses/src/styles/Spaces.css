@@ -1,0 +1,86 @@
+.spaceContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* padding: 20px; */
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* width: 80%; */
+    margin: 0 auto;
+}
+
+.spaceInfo {
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.spaceDetails {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spaceName {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.spaceBalance {
+    font-size: 18px;
+    color: #777;
+}
+
+.accountsLimits {
+    width: 100%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.toggleButton {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.toggleButton:hover {
+    background-color: #0056b3;
+}
+
+.accountsList {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.accountItem {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.accountName {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.accountLimit {
+    font-size: 14px;
+    color: #555;
+}
+
+.operations {
+    width: 100%;
+}

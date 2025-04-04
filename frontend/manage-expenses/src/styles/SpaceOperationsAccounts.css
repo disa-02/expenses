@@ -1,0 +1,44 @@
+.accountsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espacio entre elementos */
+}
+
+.accountItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.balanceInfo {
+    flex: 1; /* Ocupa todo el espacio restante */
+}
+
+.accountName {
+    font-weight: bold;
+}
+
+.accountBalance, .accountLimit {
+    margin: 5px 0;
+}
+
+.balanceButton {
+    margin-left: 10px;
+}
+
+/* Estilo del botón */
+.balanceButton button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.balanceButton button:hover {
+    background-color: #0056b3;
+}

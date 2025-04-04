@@ -1,0 +1,62 @@
+/* Estilos generales */
+
+  
+.accountContainer {
+/* background-color: #ffffff; Fondo blanco */
+/* border: 1px solid #d1d5db; Borde gris claro */
+/* border-radius: 8px; */
+/* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); Sombra suave */
+padding: 20px;
+/* max-width: 400px; */
+width: 100%;
+}
+
+
+.accountInfo {
+margin-bottom: 20px;
+}
+  
+
+.accountBalance, .accountAvailable{
+    font-size: 18px; /* Tamaño de fuente más grande */
+    margin: 10px 0; /* Espaciado vertical */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.accountButtons {
+display: flex;
+justify-content: space-between;
+margin-top: 15px;
+}
+
+button {
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 14px;
+transition: background-color 0.3s;
+}
+
+.depositButton {
+background-color: #3b82f6; /* Botón celeste */
+color: #fff;
+}
+
+.depositButton:hover {
+background-color: #2563eb; /* Celeste más oscuro en hover */
+}
+
+.withdrawButton {
+background-color: #d1d5db; /* Botón gris claro */
+color: #333;
+}
+
+.withdrawButton:hover {
+background-color: #9ca3af; /* Gris más oscuro en hover */
+}
+
+.operations {
+margin-top: 20px;
+}

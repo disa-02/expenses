@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+.appContainer {
+    display: grid;
+    grid-template-columns: 30vh auto; /* Primera columna tamaño automático, segunda columna ocupa el resto */
+    grid-template-rows: 10vh auto; /* Primera fila tamaño automático (para topBar), segunda fila ocupa el resto */
+    grid-template-areas:
+      "topbar topbar" 
+      "navbar landpage";
+    height: 100vh; /* Ajusta la altura completa de la ventana */
+    margin: 0; /* Asegura que no haya margen exterior */
+    overflow: hidden; /* Evita la barra de desplazamiento horizontal */
+    box-sizing: border-box; /* El tamaño total incluye el padding */
+  }
+  
+  .topBar {
+    display: flex;
+    justify-content: space-between;
+    grid-area: topbar;
+    padding: 10px;
+    background-color: rgb(27, 134, 196);
+    border-bottom: 1px solid grey;
+  }
+
+  .topBar button{
+    width: 90px;
+    background-color: white;
+  }
+  
+  .navBar {
+    grid-area: navbar;
+    padding: 10px;
+    overflow-y: auto;
+    border-right: 1px solid grey;;
+  }
+  
+  .landPage {
+    grid-area: landpage;
+    background-color: #f8fbfd;
+    /* padding: 10px; */
+    overflow-y: auto;
+  }
+  

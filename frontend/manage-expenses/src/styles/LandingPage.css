@@ -1,0 +1,79 @@
+.landing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
+  }
+  
+  .section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 40px 0;
+    width: 100%;
+    gap: 40px;
+  }
+  
+  .landing-image {
+    width: 50%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  .landing-text {
+    width: 50%;
+    padding: 20px;
+  }
+  
+  .landing-text h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .landing-text p {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .reverse {
+    /* flex-direction: row-reverse; */
+    background: #007bff;
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    text-align: center;
+    margin: 60px 0;
+    padding: 40px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    width: 100%;
+  }
+  
+  .cta-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .cta-section p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+  }
+  
+  .cta-button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cta-button:hover {
+    background-color: #0056b3;
+  }
+  
