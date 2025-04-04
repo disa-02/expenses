@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.expense.expense.config.security.dto.AuthResponseDto;
 import com.expense.expense.dto.AuthLoginRequestDto;
-import com.expense.expense.dto.AuthResponseDto;
 import com.expense.expense.dto.UserRegisterDto;
 import com.expense.expense.entity.UserEntity;
 import com.expense.expense.exception.UserException;
@@ -53,7 +53,7 @@ public class UserDetailServiceImp implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
         String accesToken = jwtUtils.generateToken(authenticate);
-        AuthResponseDto authResponseDto = new AuthResponseDto(id[0],username,"User loged successfuly", accesToken, true);
+        AuthResponseDto authResponseDto = new AuthResponseDto(id[0],username,JwtUtils.parseAuthoritiesToString(authenticate),"User loged successfuly", accesToken, true);
         return authResponseDto;
     }
     
@@ -79,7 +79,7 @@ public class UserDetailServiceImp implements UserDetailsService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
 
         String accessToken = jwtUtils.generateToken(authentication);
-        AuthResponseDto authResponseDto = new AuthResponseDto(newUser.getId(),user.getUsername(),"User created successfuly", accessToken, true);
+        AuthResponseDto authResponseDto = new AuthResponseDto(newUser.getId(),user.getUsername(),JwtUtils.parseAuthoritiesToString(authentication),"User created successfuly", accessToken, true);
         return authResponseDto;
     }
 }

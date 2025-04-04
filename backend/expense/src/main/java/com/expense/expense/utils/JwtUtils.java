@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -75,5 +76,12 @@ public class JwtUtils {
 
     public Map<String, Claim> getAllClaims(DecodedJWT decodedJWT){
         return decodedJWT.getClaims();
+    }
+
+    public static String parseAuthoritiesToString(Authentication authentication) {
+        return authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
     }
 }

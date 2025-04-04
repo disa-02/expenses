@@ -1,5 +1,8 @@
 package com.expense.expense.config.security;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.expense.expense.config.security.filter.AuthenticationFilter;
 import com.expense.expense.repository.UserRepository;
@@ -46,9 +52,10 @@ public class SecurityConfig {
                                         "/services/**"
                             ).permitAll();
                 http.requestMatchers("/auth/**").permitAll();
-                http.anyRequest().authenticated();
+                http.anyRequest().permitAll();
             })
             .addFilterBefore(new AuthenticationFilter(jwtUtils,userRepository), BasicAuthenticationFilter.class)
+            .cors((cors) -> cors.configurationSource(websiteConfigurationSource()))
             .exceptionHandling(Customizer.withDefaults())
             .build();
     }
@@ -69,6 +76,19 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+        private CorsConfigurationSource websiteConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // configuration.setAllowedOrigins(List.of(originURL));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS", "DELETE", "PUT"));
+        configuration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "X-Requested-With", "Accept", "Accept-Language", "Access-Control-Allow-Origin", "Cache-Control", "Pragma", "authToken"));
+        configuration.setMaxAge(3600L);
+        configuration.setAllowCredentials(true);
+        configuration.addExposedHeader("Set-Cookie");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
 }
