@@ -1,4 +1,4 @@
-package com.expense.expense.Security;
+package com.expense.expense.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.expense.expense.Security.filter.AuthenticationFilter;
+import com.expense.expense.config.security.filter.AuthenticationFilter;
 import com.expense.expense.repository.UserRepository;
 import com.expense.expense.utils.JwtUtils;
 
@@ -39,10 +39,17 @@ public class SecurityConfig {
             .httpBasic(Customizer.withDefaults())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(http -> {
+                http.requestMatchers( "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/v2/api-docs/**",
+                                        "/swagger-resources/**",
+                                        "/services/**"
+                            ).permitAll();
                 http.requestMatchers("/auth/**").permitAll();
                 http.anyRequest().authenticated();
             })
             .addFilterBefore(new AuthenticationFilter(jwtUtils,userRepository), BasicAuthenticationFilter.class)
+            .exceptionHandling(Customizer.withDefaults())
             .build();
     }
 
@@ -58,16 +65,6 @@ public class SecurityConfig {
         provider.setUserDetailsService(userDetailsService);
         return provider;
     }
-
-    // @Bean
-    // public UserDetailsService userDetailsService(){
-    //     UserDetails userDetails = User.withUsername("santiago")
-    //         .password(passwordEncoder().encode("1234"))
-    //         .roles("ADMIN")
-    //         .authorities("READ", "CREATE")
-    //         .build();
-    //     return new InMemoryUserDetailsManager(userDetails);
-    // }
 
     @Bean
     public PasswordEncoder passwordEncoder(){

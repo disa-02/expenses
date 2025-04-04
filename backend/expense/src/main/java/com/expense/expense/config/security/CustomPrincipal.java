@@ -1,4 +1,4 @@
-package com.expense.expense.Security;
+package com.expense.expense.config.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

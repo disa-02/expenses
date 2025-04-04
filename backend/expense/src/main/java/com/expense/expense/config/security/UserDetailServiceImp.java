@@ -1,4 +1,4 @@
-package com.expense.expense.Security;
+package com.expense.expense.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;

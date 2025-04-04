@@ -1,4 +1,4 @@
-package com.expense.expense.Security.filter;
+package com.expense.expense.config.security.filter;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.expense.expense.Security.CustomPrincipal;
+import com.expense.expense.config.security.CustomPrincipal;
 import com.expense.expense.entity.UserEntity;
 import com.expense.expense.repository.UserRepository;
 import com.expense.expense.utils.JwtUtils;

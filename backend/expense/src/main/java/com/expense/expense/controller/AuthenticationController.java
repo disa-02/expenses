@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.expense.expense.Security.UserDetailServiceImp;
+import com.expense.expense.config.security.UserDetailServiceImp;
 import com.expense.expense.dto.AuthLoginRequestDto;
 import com.expense.expense.dto.AuthResponseDto;
 import com.expense.expense.dto.UserRegisterDto;
