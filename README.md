@@ -20,6 +20,7 @@ Aplicación web para administrar gastos personales de forma sencilla y eficiente
 ### 🔧 Prerrequisitos
 
 - Tener instalado **Docker** y **docker-compose**
+- Tener disponibles los puertos **8080** y **5173**
 
 ---
 
