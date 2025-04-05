@@ -29,6 +29,7 @@ Desde el directorio raíz `/expenses`, ejecuta:
 
 ```bash
 docker-compose up
+```
 
 ### ▶️ Para ejecutar solo el backend
 
@@ -36,6 +37,7 @@ Desde el directorio raíz `/expenses/backend/expense`, ejecuta:
 
 ```bash
 docker-compose up
+```
 
 ### ▶️ Accesos a la Demo
 🧩 Frontend: http://localhost:5173
