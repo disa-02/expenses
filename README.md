@@ -43,4 +43,4 @@ docker-compose up
 ### ▶️ Accesos a la Demo
 🧩 Frontend: http://localhost:5173
 
-⚙️ Backend: http://http://localhost:8080/swagger-ui/index.html
+⚙️ Backend: http://localhost:8080/swagger-ui/index.html
