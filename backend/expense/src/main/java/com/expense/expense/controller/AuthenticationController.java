@@ -46,7 +46,7 @@ public class AuthenticationController {
         AuthResponseDto authResponseDto = userDetailsService.loginUser(userRequest);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, tokenCookieHeader(authResponseDto.getJwt()))
-                .body(userDetailsService.loginUser(userRequest));
+                .body(authResponseDto);
     }
 
     public String tokenCookieHeader(String token) {
@@ -63,7 +63,11 @@ public class AuthenticationController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<AuthResponseDto> signup(@RequestBody UserRegisterDto userRequest) {     
-        return new ResponseEntity<>(userDetailsService.createUser(userRequest),HttpStatus.OK);
+        AuthResponseDto authResponseDto = userDetailsService.createUser(userRequest);
+
+        return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, tokenCookieHeader(authResponseDto.getJwt()))
+                    .body(authResponseDto);
     }
     
 }

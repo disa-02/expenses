@@ -3,6 +3,8 @@ package com.expense.expense.utils;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -67,7 +69,11 @@ public class JwtUtils {
     }
 
     public String extractUsername(DecodedJWT decodedJWT){
-        return decodedJWT.getSubject().toString();
+        String subject = decodedJWT.getSubject();
+        String username = subject.split("=")[2];
+        username = username.substring(0, username.length() - 1);
+        return username;
+        // return decodedJWT.getSubject().toString();
     }
 
     public Claim getClaim(DecodedJWT decodedJWT, String claimName){

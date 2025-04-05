@@ -18,7 +18,6 @@ export const LoginPage = () => {
       const id = response.id
       localStorage.setItem('authToken', token)
       localStorage.setItem('userId', id)
-      console.log(localStorage.getItem("authToken"))
       navigate('/dashboard');
     }catch(error){
       setError(true)

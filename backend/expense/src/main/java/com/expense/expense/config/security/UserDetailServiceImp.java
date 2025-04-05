@@ -63,8 +63,8 @@ public class UserDetailServiceImp implements UserDetailsService {
         id[0] = userEntity.getId();
         if(!passwordEncoder.matches(password, userEntity.getPassword()))
             throw new BadCredentialsException("Invalid password");
-
-        return new UsernamePasswordAuthenticationToken(userEntity.getUsername(), userEntity.getPassword(),userEntity.getAuthorities());
+        CustomPrincipal customPrincipal = new CustomPrincipal(userEntity.getId(),userEntity.getUsername());
+        return new UsernamePasswordAuthenticationToken(customPrincipal, userEntity.getPassword(),userEntity.getAuthorities());
     }
 
     public AuthResponseDto createUser(UserRegisterDto userRegisterDto){
@@ -75,8 +75,9 @@ public class UserDetailServiceImp implements UserDetailsService {
         user.setCredentialNoExpired(true);
         user.setEnabled(true);
         UserEntity newUser = userRepository.save(user);
-        
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
+        CustomPrincipal customPrincipal = new CustomPrincipal(user.getId(),user.getUsername());
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(customPrincipal, user.getPassword(), user.getAuthorities());
 
         String accessToken = jwtUtils.generateToken(authentication);
         AuthResponseDto authResponseDto = new AuthResponseDto(newUser.getId(),user.getUsername(),JwtUtils.parseAuthoritiesToString(authentication),"User created successfuly", accessToken, true);

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,7 +38,10 @@ public class SecurityConfig {
 
     @Autowired
     private UserRepository userRepository;
-
+    
+    @Value("${app.auth.origin:http://localhost:5173, http://localhost:8080}")
+    private String originURL;
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
@@ -80,9 +84,9 @@ public class SecurityConfig {
 
         private CorsConfigurationSource websiteConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // configuration.setAllowedOrigins(List.of(originURL));
+        configuration.setAllowedOrigins(List.of(originURL));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS", "DELETE", "PUT"));
-        configuration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "X-Requested-With", "Accept", "Accept-Language", "Access-Control-Allow-Origin", "Cache-Control", "Pragma", "authToken"));
+        configuration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "X-Requested-With", "Accept", "Accept-Language", "Access-Control-Allow-Origin", "Cache-Control", "Pragma", "authToken", "Authorization" ));
         configuration.setMaxAge(3600L);
         configuration.setAllowCredentials(true);
         configuration.addExposedHeader("Set-Cookie");
