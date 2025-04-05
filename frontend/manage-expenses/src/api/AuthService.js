@@ -9,5 +9,9 @@ export const AuthService = {
     signup: async (credentials) =>{
         const response = await ApiService.post(ApiPaths.auth.signup, credentials)
         return response;
-    }
+    },
+    logOut: async () =>{
+        const response = await ApiService.get(ApiPaths.auth.logOut)
+        return response;
+    },
 }

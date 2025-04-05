@@ -1,7 +1,8 @@
 export const ApiPaths = {
     auth: {
         signup: '/auth/sign-up',
-        login: '/auth/log-in'
+        login: '/auth/log-in',
+        logOut: '/auth/log-out',
     },
     account: {
         base: (id) => `/account/${id}`,
