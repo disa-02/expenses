@@ -7,7 +7,7 @@ export const LimitForm = ({updateLimit, onClose, id, spaceId, token, accountId})
     const setLimitAccount = async (e) =>{
         e.preventDefault();
         try{
-            const body = {id:accountId, spaceOperationId:spaceId, limitMoney:limit}
+            const body = {id:accountId, workSpaceId:spaceId, limitMoney:limit}
             const response = await AccountBalanceService.setLimit(id,body,token)
             updateLimit(response)
         }catch(error){
